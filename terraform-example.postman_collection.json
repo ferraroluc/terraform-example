@@ -1,0 +1,115 @@
+{
+	"info": {
+		"_postman_id": "ca85d761-73a5-4408-a826-03ca60a755be",
+		"name": "Terraform Example",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "index",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url:5000}}",
+					"host": [
+						"{{url:5000}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url:5000}}/add?name=Test&money=30",
+					"host": [
+						"{{url:5000}}"
+					],
+					"path": [
+						"add"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Test"
+						},
+						{
+							"key": "money",
+							"value": "30"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getall",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url:5000}}/getall",
+					"host": [
+						"{{url:5000}}"
+					],
+					"path": [
+						"getall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url:5000}}/get/:id",
+					"host": [
+						"{{url:5000}}"
+					],
+					"path": [
+						"get",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "6"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get by name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url:5000}}/getn/:name",
+					"host": [
+						"{{url:5000}}"
+					],
+					"path": [
+						"getn",
+						":name"
+					],
+					"variable": [
+						{
+							"key": "name",
+							"value": "Test"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

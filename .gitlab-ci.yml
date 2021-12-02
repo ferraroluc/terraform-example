@@ -1,0 +1,109 @@
+stages:
+  - compress
+  - plan
+  - apply
+  - destroy
+
+compress:
+  stage: compress
+  image: alpine
+  script:
+    - apk add --update zip
+    - mkdir dist
+    - mkdir migrations/versions
+    - zip -r dist/example.zip . -x ".venv/*" -x "dist/*" -x "terraform/*" -x "__pycache__/*"
+  only:
+    variables:
+      - '$PHASE != "DESTROY"'
+  artifacts:
+    paths:
+      - dist/example.zip
+
+validate:
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint:
+      - /usr/bin/env
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  before_script:
+    - cd terraform
+    - terraform init
+  cache:
+    key: terraform
+    paths:
+      - .terraform
+  stage: plan
+  script:
+    - terraform validate
+  only:
+    variables:
+      - '$PHASE != "DESTROY"'
+  
+plan:
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint:
+      - /usr/bin/env
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  before_script:
+    - cd terraform
+    - terraform init
+  cache:
+    key: terraform
+    paths:
+      - .terraform
+  stage: plan
+  script: 
+    - terraform plan --out plan
+  artifacts:
+    paths:
+      - terraform/plan
+  only:
+    variables:
+      - '$PHASE != "DESTROY"'
+
+apply:
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint:
+      - /usr/bin/env
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  before_script:
+    - cd terraform
+    - terraform init
+  cache:
+    key: terraform
+    paths:
+      - .terraform
+  stage: apply
+  script:
+    - terraform apply --auto-approve plan
+  allow_failure: false
+  only:
+    refs:
+      - main
+    variables:
+      - '$PHASE != "DESTROY"'
+
+destroy:
+  image:
+    name: hashicorp/terraform:latest
+    entrypoint:
+      - /usr/bin/env
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  before_script:
+    - cd terraform
+    - terraform init
+  cache:
+    key: terraform
+    paths:
+      - .terraform
+  when: manual
+  stage: destroy
+  script:
+    - terraform destroy -auto-approve
+  only:
+    refs:
+      - main
+    variables:
+      - $PHASE == "DESTROY"
