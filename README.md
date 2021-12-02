@@ -1,4 +1,4 @@
-# flask-example
+# terraform-example
 ## Database
 1. Create the database. We will use a MySQL server
 ```bash
